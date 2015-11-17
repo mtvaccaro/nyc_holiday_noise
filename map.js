@@ -9,11 +9,9 @@ L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
 
 //gets dataset and formats it in json
 var hmarker;
-var halloweenData = "https://data.cityofnewyork.us/resource/fhrw-4uyv.json?descriptor=Loud Music/Party&$where=UPPER(city) NOT LIKE "%STATEN%" AND created_date BETWEEN '2015-10-29T17:00:00' AND '2015-11-01T08:00:00'
-";
+var halloweenData = "https://data.cityofnewyork.us/resource/fhrw-4uyv.json?descriptor=Loud%20Music/Party&$where=UPPER(city)%20NOT%20LIKE%20%22%25STATEN%25%22%20AND%20created_date%20BETWEEN%20'2015-10-29T17:00:00'%20AND%20'2015-11-01T08:00:00'";
 
-function ajax() {
-    $.ajax({
+var halloweenLayer = $.ajax({
         url: halloweenData,
         error: function(){
             console.log("An error has occurred");
@@ -22,17 +20,15 @@ function ajax() {
         success: function(data){
             for (var i=0; i < data.length; i++){
                 hmarker = L.circleMarker(new L.LatLng(data[i].latitude, data[i].longitude))
-                    .setRadius(4)
+                    .setRadius(2)
                     .addTo(map)
                     .bindPopup(data[i].created_date);
             }
         }
     });
-}
 
-$.when(ajax()).done(function layerControl() {
-    var overlay = {
-        "Halloween": L.tileLayer(hmarker)
-    };
-    L.control.layers(overlay).addTo(map);
-});
+var overlays = {
+    "Halloween" : halloweenLayer
+};
+
+L.control.layers(overlays).addTo(map);
